@@ -79,29 +79,12 @@ class board:
             return False
         return self.XCount() == self.OCount() + 1 and self.OCount() + 1 == self.XCount()
 
-    def placeX(self, pos):
-        if not self.isXTurn():
+    def placeChar(self, pos, char):
+        if not self.isXTurn() and char == "X":
             print("It is not Xs turn!")
             return False
         
-        if pos[0] < 0 or pos[0] > 2:
-            print("Out of bounds!")
-            return False
-        
-        if pos[1] < 0 or pos[1] > 2:
-            print("Out of bounds!")
-            return False 
-        
-        if self.layout[pos[0], pos[1]] != 0:
-            print("That space is not empty!")
-            return False
-        else:
-            self.layout[pos[0], pos[1]] = 1
-            print(self)
-            return True
-
-    def placeO(self, pos):
-        if not self.isOTurn():
+        if not self.isOTurn() and char == "O":
             print("It is not Os turn!")
             return False
         
@@ -116,7 +99,12 @@ class board:
         if self.layout[pos[0], pos[1]] != 0:
             print("That space is not empty!")
             return False
-        else:
+        
+        if char == "X":
+            self.layout[pos[0], pos[1]] = 1
+            print(self)
+            return True
+        elif char == "O":
             self.layout[pos[0], pos[1]] = 2
             print(self)
             return True
@@ -128,16 +116,16 @@ board1 = board("#,#,#,#,#,#,#,#,#")
 print(board1.XCount())
 print(board1.OCount())
 
-board1.placeO((0, 0))
-board1.placeX((0, 0))
-board1.placeO((1, 1))
-board1.placeX((1, 1))
-board1.placeO((1, 1))
-board1.placeX((1, 2))
-board1.placeX((2, 1))
-board1.placeO((1, 3))
-board1.placeX((1, 1))
-board1.placeO((0, 2))
-board1.placeX((2, 0))
-board1.placeO((0, 1))
-board1.placeX((2, 2))
+board1.placeChar((0, 0), "O")
+board1.placeChar((0, 0), "X")
+board1.placeChar((1, 1), "X")
+board1.placeChar((1, 1), "X")
+board1.placeChar((1, 1), "O")
+board1.placeChar((1, 2), "X")
+board1.placeChar((2, 1), "X")
+board1.placeChar((1, 3), "O")
+board1.placeChar((1, 1), "X")
+board1.placeChar((0, 2), "O")
+board1.placeChar((2, 0), "X")
+board1.placeChar((0, 1), "O")
+board1.placeChar((2, 2), "X")
