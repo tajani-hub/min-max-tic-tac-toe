@@ -11,7 +11,7 @@ class Board:
         entries = re.split(r'\s?,\s?', layout)
         if len(entries) != 9:
             raise Exception("""
-                            Invalid board provided. Specify a tic-tac-toe grid by giving a list of 9 vaulues in row major order.\n
+                            Invalid board provided. Specify a tic-tac-toe grid by giving a list of 9 comma separated values in row major order.\n
                             Use #s to specify empty positions, Xs and Os or 0s.
                             """)
         
@@ -22,6 +22,11 @@ class Board:
                     self.layout[i//3, i%3] = 1
             elif entries[i] ==  "O" or entries[i] == "0":
                     self.layout[i//3, i%3] = 2
+            else:
+                raise Exception("""
+                            Invalid board provided. Specify a tic-tac-toe grid by giving a list of 9 comma separated values in row major order.\n
+                            Use #s to specify empty positions, Xs and Os or 0s.
+                            """)
 
     def __str__(self):
         s = ""
@@ -52,16 +57,16 @@ class Board:
         return 9 - (self.XCount() + self.OCount())
     
     def isValid(self):
-        if len(self.layout) != 9:
+        if self.layout.size != 9:
             return False
         
-        if self.XCount < 0 or self.OCount < 0:
+        if self.XCount() < 0 or self.OCount() < 0:
             return False
         
-        if self.XCount < self.OCount:
+        if self.XCount() < self.OCount():
             return False
         
-        if self.XCount > self.OCount + 1:
+        if self.XCount() > self.OCount() + 1:
             return False
         
         if self.isXTurn() == self.isOTurn():
@@ -114,24 +119,27 @@ class Board:
 
     def checkWin(self):
         if not self.isValid():
-            return (False, None)
+            return (False, None, "Invalid")
         
         # row check
-        for row in self.layout:
-            if row[0] == row[1] and row[1] == row[2]:
-                return (True, row[0])
+        for i in range(3):
+            if self.layout[i, 0] == self.layout[i, 1] and self.layout[i, 1] == self.layout[i, 2]:
+                return (True, self.layout[i, 0], f"Row {i}")
         
         # col check
         for j in range(3):
             if self.layout[0, j] == self.layout[1, j] and self.layout[1, j] == self.layout[2, j]:
-                return (True, self.layout[0, j])
+                return (True, self.layout[0, j], f"Column {j}")
             
         # major diagonal check
         if self.layout[0, 0] == self.layout[1, 1] and self.layout[1, 1] == self.layout[2, 2]:
-            return (True, self.layout[0, 0])
+            return (True, self.layout[0, 0], "Major diagonal")
         
         # minor diagonal check
         if self.layout[0, 2] == self.layout[1, 1] and self.layout[1, 1] == self.layout[2, 0]:
-            return (True, self.layout[0, 0])
+            return (True, self.layout[0, 2], "Minor diagonal")
         
-        return (False, None)
+        if self.blankCount() == 0:
+            return (False, None, "Draw")
+        else:
+            return (False, None, "Incomplete")
