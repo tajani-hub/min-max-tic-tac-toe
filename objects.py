@@ -4,7 +4,7 @@
 import numpy as np
 import re
 
-class board:
+class Board:
     def __init__(self, layout: str):
         self.layout = np.zeros((3, 3))
 
@@ -112,20 +112,26 @@ class board:
     def clearBoard(self):
         self.layout = np.zeros((3, 3))
 
-board1 = board("#,#,#,#,#,#,#,#,#")
-print(board1.XCount())
-print(board1.OCount())
-
-board1.placeChar((0, 0), "O")
-board1.placeChar((0, 0), "X")
-board1.placeChar((1, 1), "X")
-board1.placeChar((1, 1), "X")
-board1.placeChar((1, 1), "O")
-board1.placeChar((1, 2), "X")
-board1.placeChar((2, 1), "X")
-board1.placeChar((1, 3), "O")
-board1.placeChar((1, 1), "X")
-board1.placeChar((0, 2), "O")
-board1.placeChar((2, 0), "X")
-board1.placeChar((0, 1), "O")
-board1.placeChar((2, 2), "X")
+    def checkWin(self):
+        if not self.isValid():
+            return (False, None)
+        
+        # row check
+        for row in self.layout:
+            if row[0] == row[1] and row[1] == row[2]:
+                return (True, row[0])
+        
+        # col check
+        for j in range(3):
+            if self.layout[0, j] == self.layout[1, j] and self.layout[1, j] == self.layout[2, j]:
+                return (True, self.layout[0, j])
+            
+        # major diagonal check
+        if self.layout[0, 0] == self.layout[1, 1] and self.layout[1, 1] == self.layout[2, 2]:
+            return (True, self.layout[0, 0])
+        
+        # minor diagonal check
+        if self.layout[0, 2] == self.layout[1, 1] and self.layout[1, 1] == self.layout[2, 0]:
+            return (True, self.layout[0, 0])
+        
+        return (False, None)
